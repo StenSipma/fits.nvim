@@ -1,4 +1,2 @@
 " Tmp:
-echo "Fits.vim being loaded"
-
-"UpdateRemotePlugins
+" Nothing here :D
