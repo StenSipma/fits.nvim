@@ -15,4 +15,4 @@ Simply call it with a valid FITS file as its argument and you will see the info
 menu. Move your cursor over one of the HDU's and press `Enter` to see the
 header of that HDU. Closing the header window, or the info window is done with `q`
 
-[FitsInspect Example GIF](./resources/fits-inspect.gif)
+![FitsInspect Example GIF](./resources/fits-inspect.gif)
