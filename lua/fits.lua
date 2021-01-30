@@ -15,6 +15,16 @@ local function info_to_string(info)
         end
 end
 
+local function match_highlight(group, regex, str, line, offset)
+        if not offset then
+                offset = {0, 0}
+        end
+        local a, b = regex:match_str(str)
+        if a then
+                vim.api.nvim_buf_add_highlight(0, -1, group, line-1, a+offset[1], b+offset[2])
+        end
+end
+
 local function display_header(filename)
         return function ()
                 local line = vim.api.nvim_win_get_cursor(0)[1]
@@ -26,7 +36,11 @@ local function display_header(filename)
                 local buf = vim.api.nvim_get_current_buf()
                 local lines = {}
                 for i,v in ipairs(header) do
-                        lines[#lines+1] = string.format("%-8s | %-64s", v[1], v[2])
+                        local to_append = ""
+                        if #v[3] > 0 then
+                                to_append = " / " .. v[3]
+                        end
+                        lines[#lines+1] = string.format("%-8s | %-40s", v[1], v[2]) .. to_append
                 end
                 vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
                 vim.api.nvim_buf_set_name(buf, "Header "..tostring(header_idx).." "..filename)
@@ -41,6 +55,14 @@ local function display_header(filename)
 
                 vim.wo.wrap = false
                 vim.wo.cursorline = true
+
+                -- highlighting
+                local cmt_regex = vim.regex(' / .*$')
+                local key_regex = vim.regex('.* |')
+                for i,v in ipairs(lines) do
+                        match_highlight('String', cmt_regex, v, i)
+                        match_highlight('Identifier', key_regex, v, i, {0, -1})
+                end
         end
 end
 

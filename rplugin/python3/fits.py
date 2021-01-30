@@ -49,7 +49,7 @@ class FitsOpen:
         except OSError:
             self.nvim.api.err_writeln(f"Error invalid file: {filename}")
         else:
-            return list(header.items())
+            return [(k, v, header.comments[k]) for k, v in header.items()]
         return "Error happened"
 
     @pynvim.command("FITSHead", nargs=1, complete="file", bang=True, sync=True)
