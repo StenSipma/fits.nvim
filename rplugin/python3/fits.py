@@ -1,6 +1,7 @@
 from os import path
 
 import pynvim
+from pynvim import Nvim
 from astropy.io import fits
 
 from typing import List, Union
@@ -10,8 +11,46 @@ Number = Union[int, float]
 
 @pynvim.plugin
 class FitsOpen:
-    def __init__(self, nvim):
+    def __init__(self, nvim: Nvim):
         self.nvim = nvim
+
+    @pynvim.function("FITSInfo", sync=True)
+    def fits_info(self, args):
+        if len(args) != 1:
+            self.nvim.api.err_writeln("Expected a filename, nothing given")
+            return None
+
+        filename = args[0]
+        try:
+            with fits.open(filename) as hdul:
+                info = hdul.info(False)
+        except OSError:
+            self.nvim.api.err_writeln(f"Error invalid file: {filename}")
+        else:
+            return [list(i) for i in info]
+            # return str([list(i) for i in info])
+        return None
+
+    @pynvim.function("FITSHeader", sync=True)
+    def fits_header(self, args):
+        if len(args) < 1:
+            self.nvim.api.err_writeln("Expected a filename, nothing given")
+            return None
+
+        filename = args[0]
+        if len(args) == 2:
+            index = args[1]
+        else:
+            index = 0
+
+        try:
+            with fits.open(filename) as hdul:
+                header = hdul[index].header
+        except OSError:
+            self.nvim.api.err_writeln(f"Error invalid file: {filename}")
+        else:
+            return list(header.items())
+        return "Error happened"
 
     @pynvim.command("FITSHead", nargs=1, complete="file", bang=True, sync=True)
     def fits_preview_handler(self, args, bang):
