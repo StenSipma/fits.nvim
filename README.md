@@ -15,6 +15,12 @@ Then you can install the plugin using your favorite plugin manager, i.e.:
 Plug 'StenSipma/fits.nvim'
 ```
 
+Finally, once you installed the plugin call 
+```
+UpdateRemotePlugins
+``` 
+and _restart_ NeoVim
+
 ## Usage
 Currently, there is one command (`FitsInspect`) which is able to display
 information of a FITS file and access the individual headers of each HDU.
