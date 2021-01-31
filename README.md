@@ -2,10 +2,17 @@
 NeoVim plugin to make it possible to work with FITS files from inside NeoVim
 
 ## Installation
-Requires: astropy
+Requires: 
+- Nightly version of NeoVim
+- astropy
 
 ```bash
 pip install --user astropy
+```
+
+Then you can install the plugin using your favorite plugin manager, i.e.:
+```viml
+Plug 'StenSipma/fits.nvim'
 ```
 
 ## Usage
