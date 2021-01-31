@@ -125,10 +125,14 @@ local function inspect_fits(filename)
         local mlines = {}
         local path_list = vim.split(filename, '/')
 
-        lines[1] = text_center(path_list[#path_list])
-        mlines[1] = menu.do_nothing
+        local width = vim.bo.textwidth
+        if width == 0 then
+                width = 80
+        end
 
-        lines[2] = string.rep("-", vim.bo.textwidth)
+        lines[1] = text_center(path_list[#path_list], width)
+        lines[2] = string.rep("-", width)
+        mlines[1] = menu.do_nothing
         mlines[2] = menu.do_nothing
 
         local offset = 2
