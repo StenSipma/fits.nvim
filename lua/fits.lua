@@ -19,15 +19,16 @@ end
 local function info_to_string(info)
         local hdu_type  = info[4]
         if hdu_type == "BinTableHDU" then
-                return string.format("%-15s | (%11s) | Column Types: %s", info[4], info[6], info[7])
+                return string.format("%-15s | %15s | Column Types: %s", info[4], "(" .. info[6] .. ")", info[7])
         else
                 local type_str = ""
                 for i,v in ipairs(info[6]) do
                         type_str = type_str .. tostring(v) .. " x "
                 end
                 type_str = type_str:sub(0, #type_str-3) -- remove last " x "
+                type_str = "(" .. type_str .. ")"
 
-                return string.format("%-15s | (%11s) | type: %s", info[4], type_str, info[7])
+                return string.format("%-15s | %15s | Data Type: %s", info[4], type_str, info[7])
         end
 end
 
@@ -60,14 +61,16 @@ end
 
 local function info_highlighting(lines)
         local type_regex = vim.regex(": .*$")
+        local type_prefix_regex = vim.regex("|[^|]*:")
+        local size_regex = vim.regex("(.*)")
         vim.api.nvim_buf_add_highlight(0, -1, 'Identifier', 0, 0, -1)
         vim.api.nvim_buf_add_highlight(0, -1, 'Comment', 1, 0, -1)
         for i=3,#lines do
                 vim.api.nvim_buf_add_highlight(0, -1, 'Comment', i-1, 0, -1)
                 vim.api.nvim_buf_add_highlight(0, -1, 'Identifier', i-1, 0, 16)
-                vim.api.nvim_buf_add_highlight(0, -1, 'Number', i-1, 19, 30)
-                vim.api.nvim_buf_add_highlight(0, -1, 'String', i-1, 34, -1)
                 match_highlight('Type', type_regex, lines[i], i, {1, 0})
+                match_highlight('Number', size_regex, lines[i], i, {1, -1})
+                match_highlight('String', type_prefix_regex, lines[i], i, {1, -1})
         end
 end
 
@@ -105,7 +108,7 @@ local function display_header(filename)
                         if #v[3] > 0 then
                                 to_append = " / " .. v[3]
                         end
-                        lines[#lines+1] = string.format("%-8s | %-40s", v[1], v[2]) .. to_append
+                        lines[#lines+1] = string.format("%-8s | %40s", v[1], v[2]) .. to_append
                 end
                 vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
                 header_settings("Header "..tostring(header_idx).." "..filename, buf)
