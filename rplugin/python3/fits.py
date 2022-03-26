@@ -4,7 +4,7 @@ import pynvim
 from pynvim import Nvim
 from astropy.io import fits
 
-from typing import List, Union
+from typing import Union
 
 Number = Union[int, float]
 
@@ -119,7 +119,7 @@ def pad(string: str, n: int = 1, padstr: str = " "):
     return padstr * n + string + padstr * n
 
 
-def transpose(data: List[List[Union[Number, str]]]):
+def transpose(data: list[list[Union[Number, str]]]):
     """
     Transpose a 2 dimensional array. Requires a constant row & column length,
     although the rows and columns can have different lengths w.r.t. each other.
@@ -130,7 +130,7 @@ def transpose(data: List[List[Union[Number, str]]]):
     return [[row[col] for row in data] for col in range(len(data[0]))]
 
 
-def replace(string: str, indices: List[int], chars: Union[str, List[str]]):
+def replace(string: str, indices: list[int], chars: Union[str, list[str]]):
     """
     Replaces the character at each index i (for each i in indices)
     with chars[i]
@@ -171,13 +171,13 @@ DOWN = 4
 
 
 def draw_fancy_table(
-    data: List[List[Union[Number, str]]],
+    data: list[list[Union[Number, str]]],
     rows: bool = True,
     lines: str = "│─",
     corners: str = "┌┐┘└",
     crossings: str = "┼├┤┬┴",
     align: str = "<",
-) -> List[str]:
+) -> list[str]:
     """
     TODO (2021-01-18): Add documentation
     """
